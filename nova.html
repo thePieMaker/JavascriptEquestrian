@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Infographic on Equestrian Jumping</title>
+		<meta charset="UTF-8"/>
+	</head>
+	
+	<body>
+		
+		<canvas id="myCanvas" width="1300" height="875"> </canvas> 
+		
+		<script>
+		var canvas = document.getElementById('myCanvas');     
+		var context = canvas.getContext('2d'); 
+		var keyCount = 0; 
+		var imageObj = new Image();
+		var secondaryImage = new Image();
+		var image = new Image();
+		var sections = [{src:"main.jpg"}, {src:"bad.jpg"}, {src:"cross.jpg"}, {src:"sequence.jpg"}];  //the main images of the pages
+		
+		//initial loading screen
+		image.src = sections[0].src;
+		image.onload = function(){
+			context.drawImage(image, 69, 50);
+		}
+		
+		drawTitle();
+		context.fillStyle = 'black';
+		context.font = '17pt Nueva Std';
+		context.fillStyle = '#DC12E8';
+		context.fillText('Hit enter to find out about this rider\'s position', 600, 220);
+		context.fillStyle = 'green';
+		context.fillText('Represents the slope of the horse\'s back', 600, 400);
+		context.fillStyle = '#E8B21C';
+		context.fillText('Represents the horse\'s center of mass', 600, 430);
+		
+		document.addEventListener("keyup", checkKey);
+		
+		//the first section
+		function checkKey(event){
+		//this calls the enter key - enter key code = 13
+			if (event.keyCode == '13'){
+				eraseBoard();
+				document.removeEventListener("keyup", checkKey);
+				context.drawImage(image, 69, 50);
+				
+				//drawings of the position of the horse and rider
+				riderBack();  //the slope of the rider's back
+				horseBack();  //the slope of the horse's back
+				legLine();	  //the line the rider's weight follows
+				riderTriangle();  // shoulder-knee-heel alignment
+				horseCenterOfMass1(); //shows the horse's center of mass
+				
+				context.font = '15pt Nueva Std';
+				context.fillStyle = 'black';
+				context.fillText('This rider is well balanced over their horse.', 73, 520);
+				context.fillText('They have let their weight sink into their heels.', 73, 565);
+				context.fillText('They also remain right over the horse\'s center of gravity.', 73, 610);
+				context.fillStyle = '#DC12E8';
+				context.fillText('Press shift to continue', 600, 220);
+				context.fillStyle = 'black';
+				context.fillText('The path the horse takes over an obstacle', 705, 565);
+				secondaryImage.src = sections[3].src;  //accessory image showing flight path of horse
+				secondaryImage.onload = function(){
+					context.drawImage(secondaryImage, 700, 250);
+					jumpArc();  //parabola illustrating flight path
+				}
+			}
+		}	
+		
+		document.addEventListener("keyup", checkKey2);
+		
+		//second section
+		function checkKey2(event){
+			if (event.keyCode == '16'){
+				eraseBoard();
+				document.removeEventListener("keyup", checkKey2);
+				
+				image.src = sections[1].src;
+				image.onload = function(){
+					context.drawImage(image, 150, 150, 400, 300);
+					badRider();  //triangle drawing representing rider's body position 
+					badHorseBack();  //line showing horse's back slope
+					horseCenterOfMass2();  //shows center of mass of horse
+				}
+				drawBaseImage();
+				context.font = '15pt Nueva Std';
+				context.fillStyle = 'black';
+				context.fillText('This is how many riders used to jump prior to the twentieth century.', 92, 480);
+				context.fillText('The rider/horse positioning looks disharmonious', 92, 510);
+				context.fillText('The rider looks unbalanced, and the horse looks extremely uncomfortable.', 92, 540);
+				context.fillText('-The horse\'s head is cranked unnaturally high', 152, 570);
+				context.fillText('This turned many horses off from jumping', 92, 600);
+				context.fillText('Compare this to the modern method of following', 700, 577);
+				context.fillText(' the horse\'s natural movement', 780, 607);
+				context.fillStyle = '#DC12E8';
+				context.fillText('Press the right arrow key to continue', 600, 220);
+				
+			}
+			
+		}
+		document.addEventListener("keyup", checkKey3);
+		
+		function checkKey3(event){
+			if (event.keyCode == '39'){
+				eraseBoard();
+				document.removeEventListener("keyup", checkKey3);
+				drawBaseImage();
+				image.src = sections[2].src;
+				image.onload = function(){
+					context.drawImage(image, 69, 50);
+					crossRiderBack(); //line showing slope of rider's back
+					crossTriangle();  //shows in part the weight distribution of the rider over the horse's back
+					crossTriangle2(); //second part of a triangular shape showing weight distribution
+					crossHorseBack(); //shows the slope of the horse's back
+					horseCenterOfMass3();  //shows the center of mass of the horse
+				}
+				
+				context.font = '15pt Nueva Std';
+				context.fillStyle = 'black';
+				context.fillText('This is a rider guiding a horse over a cross-country obstacle.', 92, 425);
+				context.fillText('These obstacles are very solid, and will not give way even if a horse falls.', 92, 455);
+				context.fillText('So, the rider\'s goal is to maintain a secure seat as much as possible.', 92, 485);
+				context.fillText('- Just in case the horse trips or falls!', 152, 515);
+				context.fillText('This is accomplished by having a slightly lower and further back seat.', 92, 545);
+				context.fillText('Note the horse is still allowed to strech his neck as much as he wants.', 92, 575);
+				context.fillText('Notice how a two-point position has less', 750, 577); 
+				context.fillText('points of contact with the horse', 780, 607);
+				document.addEventListener("keyup", checkKey);
+				
+			}
+		}	
+		
+		function loadScene(){
+			image.onload = function(){
+				eraseBoard();
+				context.drawImage(image, 69, 50);
+				document.addEventListener("keyup", checkKey);
+			}
+		}
+		
+		//clears the canvas
+		function eraseBoard(){
+			context.clearRect(0,0, canvas.width, canvas.height);
+			drawTitle();
+		}
+		
+		//accessory image
+		function drawBaseImage(){
+			imageObj.onload = function() {
+				var sourceX = 200;
+				var sourceY = 50;
+				var sourceWidth = 175;
+				var sourceHeight = 250;
+				var destWidth = 225;
+				var destHeight = 300;
+				var destX = 800;      
+				var destY = 250;	
+				context.drawImage(imageObj, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight);
+			};
+				  
+			imageObj.src = 'main.jpg';
+		}
+		
+		//draws the title
+		function drawTitle(){
+			context.fillStyle = 'black';
+			context.font = 'italic bold 40pt Nueva Std';
+			context.fillText('Equestrian Jumping', 600, 100);
+			context.fillStyle = '#00632D';
+			context.font = 'italic 23pt Nueva Std';
+			context.fillText('The Importance of the Rider\'s Position', 600, 150);
+		}  
+		
+		function drawImage(image, x, y){
+			context.drawImage(image, x, y);
+		}
+		
+		function riderBack(){
+			context.beginPath();
+			context.moveTo(300,140);
+			context.lineTo(400, 125);
+			context.lineWidth = 3;
+			context.strokeStyle = 'red';
+			context.stroke();
+		}
+		
+		function horseBack(){
+			context.beginPath();
+			context.moveTo(300,200);
+			context.lineTo(400, 185);
+			context.lineWidth = 3;
+			context.strokeStyle = 'green';
+			context.stroke();
+		}
+		
+		function legLine(){
+			context.beginPath();
+			context.moveTo(325, 137);
+			context.lineTo(352, 277);
+			context.lineWidth = 3;
+			context.strokeStyle = 'red';
+			context.stroke();
+		}
+		
+		function riderTriangle(){
+			context.beginPath();
+			context.moveTo(379, 128);
+			context.lineTo(352, 277);
+			context.lineWidth = 3;
+			context.strokeStyle = 'red';
+			context.stroke();
+		}
+		
+		function jumpArc(){
+			context.beginPath();
+			context.moveTo(815, 485);
+			context.quadraticCurveTo(1000, 230, 1200, 485);
+			context.lineWidth = 10;
+			context.strokeStyle = 'purple';
+			context.stroke();
+		}
+		
+		function badRider(){
+			context.beginPath();
+			context.moveTo(360, 300);
+			context.lineTo(320, 220);
+			context.lineTo(330, 200);
+			context.closePath();
+			context.lineWidth = 3;
+			context.strokeStyle = 'blue';
+			context.stroke();
+		}
+		
+		function badHorseBack(){
+			context.beginPath();
+			context.moveTo(310, 263);
+			context.lineTo(390, 263);
+			context.closePath();
+			context.lineWidth = 3;
+			context.strokeStyle = 'green';
+			context.stroke();
+		}
+		
+		function crossRiderBack(){
+			context.beginPath();
+			context.moveTo(362, 106);
+			context.lineTo(267, 188);
+			context.lineWidth = 5;
+			context.strokeStyle = 'orange';
+			context.stroke();
+		}
+		
+		function crossTriangle(){
+			context.beginPath();
+			context.moveTo(333, 278);
+			context.lineTo(319, 140);
+			context.lineWidth = 5;
+			context.strokeStyle = 'orange';
+			context.stroke();
+		}
+		
+		function crossTriangle2(){
+			context.beginPath();
+			context.moveTo(333, 278);
+			context.lineTo(279, 177);
+			context.lineWidth = 5;
+			context.strokeStyle = 'orange';
+			context.stroke();
+		}
+		
+		function crossHorseBack(){
+			context.beginPath();
+			context.moveTo(358, 197);
+			context.lineTo(243, 223);
+			context.lineWidth = 3;
+			context.strokeStyle = 'green';
+			context.stroke();
+		}
+		
+		function crossJump(){
+			context.beginPath();
+			context.moveTo(10, 150);
+			context.lineTo(800, 200);
+			context.lineWidth = 5;
+			context.strokeStyle = 'orange';
+			context.stroke();
+		}
+				  
+		function horseCenterOfMass1(){
+			context.beginPath();
+			context.moveTo(357, 245);
+			context.lineTo(362, 245);
+			context.lineTo(362, 250);
+			context.lineTo(357, 250);
+			context.closePath();
+			context.lineWidth = 5;
+			context.strokeStyle = 'yellow';
+			context.stroke();
+		}
+	
+		function horseCenterOfMass2(){
+			context.beginPath();
+			context.moveTo(361, 292);
+			context.lineTo(363, 292);
+			context.lineTo(363, 295);
+			context.lineTo(361, 295);
+			context.closePath();
+			context.lineWidth = 5;
+			context.strokeStyle = 'yellow';
+			context.stroke();
+		}
+
+		function horseCenterOfMass3(){
+			context.beginPath();
+			context.moveTo(339, 259);
+			context.lineTo(344, 259);
+			context.lineTo(344, 262);
+			context.lineTo(339, 262);
+			context.closePath();
+			context.lineWidth = 5;
+			context.strokeStyle = 'yellow';
+			context.stroke();
+		}
+
+		</script>
+	</body>
+</html>
